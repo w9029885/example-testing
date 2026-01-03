@@ -47,6 +47,23 @@ describe('listProducts', () => {
 
   describe('error scenarios', () => {
     // Error scenario tests can be added here
-    it.todo('should handle repository errors gracefully');
+    it('should handle repository errors gracefully', async () => {
+  // Arrange: mock repo that throws
+  const errorMessage = 'Database unavailable';
+  const productRepo = {
+    list: async () => { throw new Error(errorMessage); },
+    // Provide no-op implementations for interface completeness
+    getById: async () => null,
+    save: async (p: any) => p,
+    delete: async () => {},
+  };
+  
+  // Act
+  const result = await listProducts({ productRepo });
+  
+  // Assert
+  expect(result.success).toBe(false);
+  expect(result.error).toBe(errorMessage);
+});
   });
 });
